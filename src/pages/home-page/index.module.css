@@ -1,0 +1,82 @@
+.top {
+    background: linear-gradient(180deg, #d9e1ff 0%, #f5f5f5 100%);
+    padding-top: 48px;
+    padding-bottom: 48px;
+
+}
+
+.topImage {
+    width: 533px;
+    height: 438px;
+    position: relative;
+
+}
+
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.title {
+    color: #000;
+    font-family: Poppins;
+    font-size: 42px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 56px;
+    /* 133.333% */
+}
+
+.bannerLeft {
+    max-width: 500px;
+}
+
+.buttons {
+    display: flex;
+    gap: 24px;
+    margin-top: 48px;
+}
+
+.cardSubTilte {
+    color: #333;
+    margin-top: 12px;
+}
+
+.card {
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 24px;
+
+}
+
+.tokenList {
+    margin-top: 48px;
+    padding-top: 48px;
+}
+
+@media (max-width: 1288px) {
+
+
+    .top {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .tokenList {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (max-width: 800px) {
+    .banner {
+        flex-direction: column-reverse;
+
+    }
+
+    .topImage {
+        width: 80%;
+    }
+}

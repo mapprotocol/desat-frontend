@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+.desatButton {
+  border-radius: 4px;
+  padding: 6px 18px;
+  background: #0052d9;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+
+}
+
+.desatButton:hover {
+  background: #2860e3;
+  transition: all 0.3s;
+  transition-timing-function: ease-in;
+}
+
+.desatWhiteButton {
+  border-radius: 4px;
+  padding: 6px 18px;
+  border: 1px solid #333;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
