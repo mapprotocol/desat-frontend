@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react'
 import Router from 'next/router';
 import styles from './index.module.css'
 import Image from 'next/image'
+import { Button, Space, Spin, Table } from 'antd';
+import { useBtcPrice } from '@/hooks/useBtcPrice';
+
+let sort = 0
 type Props = {
   imageArray: number[]
 }
@@ -13,11 +17,17 @@ export default function HomePage(
 ) {
   const [total, setTotal] = useState({
     support_token_count: 0,
-    transaction_count: 0,
-    turnover_24: "0",
-    turnover_all: "0",
+    total_success_tx_count: 0,
+    turnover_24h: 0,
+    turnover_all: 0,
   })
-
+  const [loading, setLoading] = useState(true)
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0
+  });
+  const btcPrice = useBtcPrice()
   const [tokens, setTokens] = useState([])
 
   useEffect(() => {
@@ -25,21 +35,38 @@ export default function HomePage(
       setTotal(res.data)
     })
 
-    getTokens({
-      sort: 0,
-      offset: 0,
-      limit: 10
-    }).then(res => {
-      setTokens(res.data.list)
-
-    })
-    // getAccount()
   }, [])
 
+  useEffect(() => {
+    // 在组件加载和页码变化时调用API
+    getTokenFun(pagination.current, pagination.pageSize);
+  }, [pagination.current, pagination.pageSize]);
+
+
+  const getTokenFun = (page, pageSize) => {
+    setLoading(true);
+
+    const offset = page;
+    getTokens({
+      sort: sort,
+      offset: offset,
+      limit: pageSize,
+      is_desc:true
+    }).then(res => {
+      setTokens(res.data.tick_market_infos);
+      setPagination(prev => ({
+        ...prev,
+        current: page,
+        pageSize,
+        total: res.data.total,
+      }));
+      setLoading(false);
+    });
+  };
 
   const jumpTokenTrade = (token) => {
 
-    Router.push(`/token-trade?tick=${token.token}`)
+    Router.push(`/token-trade?tick=${token.tick}`)
   }
   // const getAccount = async () => {
   //   try {
@@ -57,6 +84,55 @@ export default function HomePage(
 
   // }
 
+  const columns: any = [
+    // {
+    //   title: '#',
+    //   dataIndex: 'action_id',
+    // },
+    {
+      title: 'name',
+      dataIndex: 'tick',
+      render: (tick: any, item: any) => <div className={styles.tokenName}>
+        <Image
+          height={32}
+          width={32}
+          src={item.icon_url}
+          alt="" />{
+          item.tick + "/ USDT"}</div>,
+    },
+    {
+      title: 'last price',
+      dataIndex: 'last_price',
+      render: (last_price: any) => <div>
+        {last_price + " sats"}</div>,
+    },
+    {
+      title: '24 %',
+      dataIndex: 'increase_24h',
+      render: (increase_24h: any) => <div>
+        {increase_24h}</div>,
+    },
+    {
+      title: 'market_cap',
+      dataIndex: 'market_cap',
+      render: (market_cap: any) => <div>
+        {(market_cap * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
+    },
+    {
+      title: 'volume 24h',
+      dataIndex: 'volume_24h',
+      render: (volume_24h: any) => <div>
+        {(volume_24h * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
+    },
+
+
+  ];
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    getTokenFun(pagination.current, pagination.pageSize);
+
+  };
+
   return (
     <>
       <div >
@@ -67,10 +143,10 @@ export default function HomePage(
             <div className={styles.banner}>
               <div className={styles.bannerLeft}>
                 <h1 className={styles.title}>Explore <text style={{ color: '#0052d9' }}>Desats</text>: Unlock the Next Crypto Treasure Trove</h1>
-                <div className={styles.buttons}>
+                {/* <div className={styles.buttons}>
                   <button className="desatButton">Marketplace</button>
                   <button className="desatWhiteButton">Marketplace</button>
-                </div>
+                </div> */}
               </div>
 
               <div className={styles.topImage}>
@@ -84,11 +160,11 @@ export default function HomePage(
 
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
               <div className={styles.card}>
-                <p className="text-3xl font-semibold">{total.turnover_24}</p>
+                <p className="text-3xl font-semibold">{"$ " + (total.turnover_24h * btcPrice.usd * 0.00000001).toFixed(3)}</p>
                 <p className={styles.cardSubTilte}>Total 24-hour turnover of the platform</p>
               </div>
               <div className={styles.card}>
-                <p className="text-3xl font-semibold">{total.turnover_all}</p>
+                <p className="text-3xl font-semibold">{"$ " + total.turnover_all * btcPrice.usd * 0.00000001}</p>
                 <p className={styles.cardSubTilte}>Total historical turnover of the platform</p>
               </div>
               <div className={styles.card}>
@@ -96,7 +172,7 @@ export default function HomePage(
                 <p className={styles.cardSubTilte}>Number of tokens supported</p>
               </div>
               <div className={styles.card}>
-                <p className="text-3xl font-semibold">{total.transaction_count}</p>
+                <p className="text-3xl font-semibold">{total.total_success_tx_count}</p>
                 <p className={styles.cardSubTilte}>Total number of successful transactions</p>
               </div>
             </section>
@@ -106,51 +182,54 @@ export default function HomePage(
         <div className={styles.tokenList}>
 
           <main className="max-w-7xl mx-auto">
-            <section className="bg-white p-6 rounded-lg shadow mb-12">
-              <h2 className="text-2xl font-bold mb-4">ARC20 List</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-4">#</th>
-                      <th className="text-left p-4">Name</th>
-                      <th className="text-left p-4">Last Price</th>
-                      <th className="text-left p-4">24h %</th>
-                      <th className="text-left p-4">Market Cap</th>
-                      <th className="text-left p-4">Volume (24h)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Repeat for each token */}
-                    {tokens.map((item, index) => (
-                      <tr
-                        onClick={() => { jumpTokenTrade(item) }}
-                        className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : ''}`} key={index}>
-                        <td className="p-4">{index + 1}</td>
-                        <td className="p-4 flex items-center">
-                          <i className="fas fa-coins mr-2"></i>
-                          {item.token} / USDT
-                        </td>
-                        <td className="p-4">{item.last_price} sats</td>
-                        <td className="p-4">92.1%</td>
-                        <td className="p-4">{item.market_cap}s</td>
-                        <td className="p-4">{item.volume_24} s</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex justify-center mt-4">
-                <nav className="flex">
-                  {/* Pagination */}
-                  <a href="#" className="px-3 py-1 mx-1 bg-gray-200 text-gray-800 rounded">1</a>
-                  <a href="#" className="px-3 py-1 mx-1 bg-gray-200 text-gray-800 rounded">2</a>
-                  <a href="#" className="px-3 py-1 mx-1 bg-gray-200 text-gray-800 rounded">3</a>
-                  <a href="#" className="px-3 py-1 mx-1 bg-gray-200 text-gray-800 rounded">4</a>
-                  <a href="#" className="px-3 py-1 mx-1 bg-gray-200 text-gray-800 rounded">5</a>
-                </nav>
-              </div>
-            </section>
+            <div className={styles.title}>ARC20 List</div>
+
+            <Space style={{ marginBottom: 48, marginTop: 48 }}>
+              <Button onClick={() => {
+                sort = 0
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0
+                })
+                getTokenFun(1, pagination.pageSize);
+
+              }}>Earnings Yield</Button>
+              <Button onClick={() => {
+                sort = 1
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0
+                })
+                getTokenFun(1, pagination.pageSize);
+
+              }}>24-hour Turnover</Button>
+              <Button onClick={() => {
+                sort = 2
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0
+                })
+                getTokenFun(1, pagination.pageSize);
+
+              }}>Recently Released Tokens</Button>
+            </Space>
+            {<Table
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: event => {
+                    jumpTokenTrade(record)
+                  }
+                }
+              }
+              }
+              columns={columns}
+              loading={loading}
+              pagination={pagination}
+              dataSource={tokens} onChange={onChange} />}
+
           </main>
         </div>
 

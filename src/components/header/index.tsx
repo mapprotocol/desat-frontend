@@ -3,28 +3,28 @@ import Image from 'next/image'
 import styles from './index.module.css'
 import Router from 'next/router';
 import { useRouter } from 'next/router';
+import { signIn, signInPrepare } from '@/api';
+import { ellipsizeString } from '@/utils/utils';
 
-import Head from 'next/head';
 
 const Header = (
 
 ) => {
-    const [currentTab, setCurrentTab] = useState<string | null>(null);
     const [fade, setFade] = useState(styles.header)
     const [isOpen, setIsOpen] = useState(false);
-
+    const [userInfo, setUserInfo] = useState({
+        address: ''
+    })
     const router = useRouter();
-    const [languageLabel, setLanguageLabel] = useState('English')
-    const navbarRef = useRef<any>(null);
     const [showPanel, setShowPanel] = useState(false);
 
-    
 
-
-
-
-   
     useEffect(() => {
+        if (localStorage.getItem('accessToken') && new Date().getTime() > Number(localStorage.getItem('at_expires'))*1000 && localStorage.getItem('address') == unisat._selectedAddress) {
+            setUserInfo({
+                address: unisat._selectedAddress
+            })
+        }
         const headerVisibility = () => {
             if (window.pageYOffset > 100) {
                 setFade(`${styles.header} ${styles.shadow}`)
@@ -33,44 +33,57 @@ const Header = (
             }
         };
 
-        const handleOutsideClick = (e: MouseEvent) => {
-            if (navbarRef.current && !navbarRef.current.contains(e.target as Node)) {
-                setCurrentTab(null);
-                setShowPanel(false)
-            }
-        };
-
-        window.addEventListener('click', handleOutsideClick);
-
-
         window.addEventListener("scroll", headerVisibility);
         return () => {
-            window.removeEventListener('click', handleOutsideClick);
             window.removeEventListener('scroll', headerVisibility);
         };
 
     }, [])
 
-    const jumpToLanguageSelect = () => {
-        if (router.pathname !== "/language")
-            Router.push(`/language?from=${router.asPath}`)
+
+    const signInFunc = async () => {
+        // console.log(await window.unisat.signMessage("hello world"))
+        if (userInfo.address)
+            return
+        signInPrepare({
+            address: unisat._selectedAddress
+        }).then(async res => {
+            let signature = await window.unisat.signMessage(res.data.sign_message)
+            let pubkey = await window.unisat.getPublicKey();
+            signIn({
+                address: unisat._selectedAddress,
+                pubkey: pubkey,
+                signature
+            }).then(res => {
+                localStorage.setItem('accessToken', res.data.access_token);
+                localStorage.setItem('address', unisat._selectedAddress);
+
+                localStorage.setItem('at_expires', res.data.at_expires);
+
+                setUserInfo({
+                    address: unisat._selectedAddress
+                })
+            })
+        })
     }
 
     return (
-        <>
-            <header className={fade}>
-                <div onClick={() => {
-                    Router.push('/')
-                }} className={styles.logoImage} >
-                   
-                </div>
-                <div className={styles.headerRight} ref={navbarRef}>
-             
-                </div>
+        <div className={fade}>
+            <div onClick={() => {
+                Router.push('/')
+            }} className={styles.logoImage} >
+                <Image
+                    fill
+                    objectFit="contain"
+                    src="/images/desat.png"
+                    alt="" />
 
-                
-            </header>
-        </>
+            </div>
+
+            {/* <div onClick={()=>signInFunc }>{'singIn'}</div> */}
+            <div className={styles.singIn} onClick={() => { signInFunc() }}>{userInfo.address ? ellipsizeString(userInfo.address, 8, 8)
+                : 'signin'}</div>
+        </div>
     );
 };
 

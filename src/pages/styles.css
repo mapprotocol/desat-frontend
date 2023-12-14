@@ -41,3 +41,14 @@ body {
   font-size: 16px;
   font-weight: 500;
 }
+.ant-btn-primary{
+  background: #0052d9;
+  color: #fff;
+  font-weight: 500;
+
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #0054FC!important;
+  font-weight: 500;
+}

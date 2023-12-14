@@ -6,7 +6,7 @@
     justify-content: space-between;
     box-sizing: border-box;
     height: 68px;
-    background-color: #fff;
+    background-color: #000;
     top: 0;
     z-index: 99;
     width: 100%;
@@ -38,9 +38,18 @@
 
 .logoImage {
     cursor: pointer;
+    position: relative;
+    width: 120px;
+    height: 36px;
 }
 
-
+.singIn{
+    color: #fff;
+    background-color: #0054FC;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
 @media (max-width: 1288px) {
     .header {
         padding: 0 24px;

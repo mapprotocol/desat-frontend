@@ -1,0 +1,235 @@
+.tokenInfo {
+    margin-top: 48px;
+    height: 104px;
+    background-color: #F6F6F6;
+    margin-left: calc(50% - 632px);
+    margin-right: calc(50% - 632px);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.tokenInfo {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tokenInfo:hover {
+    background-color: #f1f1f1;
+
+}
+
+.tokenName {
+    color: #000;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardListTop {
+    margin-top: 12px;
+    margin-bottom: 24px;
+}
+
+.cardList {
+    width: 100%;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.body {
+    margin-top: 48px;
+    margin-left: calc(50% - 632px);
+    margin-right: calc(50% - 632px);
+    padding-bottom: 200px;
+}
+
+
+.orderCard {
+    flex-basis: 18.2%;
+    width: 208px;
+    border: 1px solid #B2B2B2;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.5s;
+    cursor: pointer;
+
+}
+
+.orderCard:hover {
+    border: 1px solid #0054FC;
+}
+
+.orderCard:hover .buyButton {
+
+    background: #0054FC;
+    color: #fff;
+}
+
+.titleTop {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.cardTop {
+    padding: 12px;
+}
+
+.cardTitle {
+    color: #000;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+
+}
+
+.transfer {
+
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: #E5EDFD;
+}
+
+.ordersId {
+    border-top: 1px solid #B2B2B2;
+    border-bottom: 1px solid #B2B2B2;
+    padding: 4px 12px;
+
+
+}
+
+.price {
+    padding-left: 12px;
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buyButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    background: #F6F6F6;
+    box-sizing: border-box;
+    margin: 0 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+
+
+.cardListTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cardTop {
+    background: linear-gradient(180deg, #FFF 0%, #F6F6F6 100%);
+}
+
+.pagination {
+
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btcIcon {
+    margin-left: 12px;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    position: relative;
+}
+
+.refreshIcon {
+    height: 16px;
+    width: 16px;
+    position: relative;
+}
+
+.freshLeft {
+
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background-color: #f6f6f6;
+    transition: all 0.5s;
+}
+
+.refresh:hover {
+    background-color: #dbd9d9;
+
+}
+
+.datas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+}
+
+.tokenRight {
+    display: flex;
+    gap: 24px;
+}
+
+.infoTab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabTitle {
+
+    color: #636363;
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+@media (max-width: 1288px) {
+
+
+    .tokenInfo {
+        margin-left: 24px;
+        margin-right: 24px;
+    }
+
+    .body {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (max-width: 800px) {}

@@ -55,7 +55,11 @@
     margin-top: 48px;
     padding-top: 48px;
 }
-
+.tokenName{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 @media (max-width: 1288px) {
 
 
