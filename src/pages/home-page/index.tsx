@@ -186,16 +186,6 @@ export default function HomePage(
 
             <Space style={{ marginBottom: 48, marginTop: 48 }}>
               <Button onClick={() => {
-                sort = 0
-                setPagination({
-                  current: 1,
-                  pageSize: 10,
-                  total: 0
-                })
-                getTokenFun(1, pagination.pageSize);
-
-              }}>Earnings Yield</Button>
-              <Button onClick={() => {
                 sort = 1
                 setPagination({
                   current: 1,
@@ -204,7 +194,7 @@ export default function HomePage(
                 })
                 getTokenFun(1, pagination.pageSize);
 
-              }}>24-hour Turnover</Button>
+              }}>Volume 24h</Button>
               <Button onClick={() => {
                 sort = 2
                 setPagination({
@@ -214,7 +204,17 @@ export default function HomePage(
                 })
                 getTokenFun(1, pagination.pageSize);
 
-              }}>Recently Released Tokens</Button>
+              }}>Turnover 24h</Button>
+              <Button onClick={() => {
+                sort = 3
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0
+                })
+                getTokenFun(1, pagination.pageSize);
+
+              }}>Increase 24h</Button>
             </Space>
             {<Table
               onRow={(record, rowIndex) => {

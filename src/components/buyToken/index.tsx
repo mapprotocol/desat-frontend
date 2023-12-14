@@ -15,7 +15,9 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }: any) => {
     const myOrder = (order.seller == window.unisat._selectedAddress ? true : false)
     const [gasData, setGasData] = React.useState<any>({});
 
-    const [total, setTotal] = React.useState(0)
+    const [value, setValue] = React.useState("");
+    const [disabled, setDisable] = React.useState(false);
+    const [cost, setCost] = React.useState(0);
 
     const [inputValue, setInputValue] = React.useState(0);
 
@@ -168,6 +170,15 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }: any) => {
         setInputValue(newValue);
     };
 
+
+    const handleInputChange = (e: any) => {
+
+        const newValue = e.target.value.replace(/[^0-9]/g, '');
+        setValue(newValue);
+        const newTotal = newValue ? parseInt(newValue, 10) * order.amount * btcPrice.usd * 0.00000001 : 0;
+        setCost(newTotal);
+    };
+
     const gasCard = [
         {
             title: 'Slow',
@@ -309,12 +320,19 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }: any) => {
 
                 {localStorage.getItem('address') == window.unisat._selectedAddress && < div className={styles.buttons}>
                     {myOrder ?
-                        <><Button disabled={selectedId === null} style={{ width: '96px', marginTop: '24px' }} onClick={
+                        <><Button disabled={selectedId === null} style={{ marginTop: '24px' }} onClick={
                             createPutOffFun
-                        } type="primary" >CANCEL</Button>
-                            <Button disabled={selectedId === null} style={{ width: '96px', marginTop: '24px' }} onClick={
+                        } type="primary" >CANCEL ORDER</Button>
+                            <div style={{ width: '100%' }}>
+                                <div className={styles.title}>update price</div>
+                                <Input placeholder="unit price" value={value} onChange={handleInputChange} />
+                                <div className={styles.title}
+                                > {"Total: $ " + cost}</div>
+                            </div>
+                            <Button disabled={selectedId === null || cost == 0} style={{ width: '96px', marginTop: '24px' }} onClick={
                                 createModifyPriceFun
                             } type="primary" >UPDATE</Button>
+
                         </> : <Button disabled={selectedId === null} style={{ width: '96px', marginTop: '24px' }} onClick={
                             createBidfun
                         } type="primary" >BUY</Button>}
