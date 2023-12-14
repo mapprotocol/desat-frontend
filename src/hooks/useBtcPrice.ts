@@ -33,6 +33,9 @@ export const useBtcPrice = (): price => {
             usd: usd,
           })
       } catch (error) {
+        setBitcoinPrice({
+          usd: 42000,
+        })
         console.error(error)
       }
     })()

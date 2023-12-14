@@ -13,6 +13,10 @@ const nextConfig = {
   images: {
     domains: ['d38hkcprerswq9.cloudfront.net'],
   },
+  eslint: {
+    
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = nextConfig

@@ -13,7 +13,7 @@ const status = ["All", "Listed", "Sold", "Unlisted", "Updated"]
 const color = ["blue", "processing", "success", "error", "warning"]
 
 
-export const MyOrder = ({ btcPrice }) => {
+export const MyOrder = ({ btcPrice }:any) => {
     const router = useRouter()
     const [activity, setActivity] = React.useState<any>();
 
@@ -44,7 +44,7 @@ export const MyOrder = ({ btcPrice }) => {
         {
             title: 'Total cost',
             dataIndex: '',
-            render: (_: any, item) => <>{"$ " + item.unit_price * item.amount * btcPrice * 0.00000001}</>,
+            render: (_: any, item:any) => <>{"$ " + item.unit_price * item.amount * btcPrice * 0.00000001}</>,
         },
         {
             title: 'Seller',
@@ -72,7 +72,7 @@ export const MyOrder = ({ btcPrice }) => {
         getActivity({
             tick: router.query.tick,
             offset: 1,
-            address: unisat._selectedAddress,
+            address: window.unisat._selectedAddress,
             limit: 20
         }).then(res => {
             setActivity(res.data.order_events)

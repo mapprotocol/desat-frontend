@@ -43,7 +43,7 @@ export default function HomePage(
   }, [pagination.current, pagination.pageSize]);
 
 
-  const getTokenFun = (page, pageSize) => {
+  const getTokenFun = (page: number, pageSize: number) => {
     setLoading(true);
 
     const offset = page;
@@ -51,7 +51,7 @@ export default function HomePage(
       sort: sort,
       offset: offset,
       limit: pageSize,
-      is_desc:true
+      is_desc: true
     }).then(res => {
       setTokens(res.data.tick_market_infos);
       setPagination(prev => ({
@@ -64,7 +64,7 @@ export default function HomePage(
     });
   };
 
-  const jumpTokenTrade = (token) => {
+  const jumpTokenTrade = (token: any) => {
 
     Router.push(`/token-trade?tick=${token.tick}`)
   }
@@ -98,7 +98,7 @@ export default function HomePage(
           width={32}
           src={item.icon_url}
           alt="" />{
-          item.tick + "/ USDT"}</div>,
+          item.tick}</div>,
     },
     {
       title: 'last price',
@@ -113,22 +113,22 @@ export default function HomePage(
         {increase_24h}</div>,
     },
     {
-      title: 'market_cap',
+      title: 'market cap',
       dataIndex: 'market_cap',
       render: (market_cap: any) => <div>
-        {(market_cap * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
+        {"$ " + (market_cap * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
     },
     {
       title: 'volume 24h',
       dataIndex: 'volume_24h',
       render: (volume_24h: any) => <div>
-        {(volume_24h * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
+        {"$ " + (volume_24h * btcPrice.usd * 0.00000001).toFixed(3)}</div>,
     },
 
 
   ];
 
-  const onChange = (pagination, filters, sorter, extra) => {
+  const onChange = (pagination: any) => {
     getTokenFun(pagination.current, pagination.pageSize);
 
   };

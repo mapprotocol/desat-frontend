@@ -34,11 +34,8 @@ export default function TokenTrade(
     const [drop, setDrop] = useState("Price: Low to High")
     const btcPrice = useBtcPrice()
 
-    const [tokenInfo, setTokenInfo] = useState({
-        last_price: 2,
-        amount: 0,
-        tx_id: '',
-        vout: 0
+    const [tokenInfo, setTokenInfo] = useState<any>({
+
     })
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpen1, setIsModalOpen1] = useState(false);
@@ -48,7 +45,7 @@ export default function TokenTrade(
 
     };
 
-    const showModal1 = (item) => {
+    const showModal1 = (item:any) => {
         setIsModalOpen1(true);
         setOrder(item)
     };
@@ -59,7 +56,7 @@ export default function TokenTrade(
             getOrdersFunc()
             getTokenInfoFun()
         }
-        unisat.requestAccounts()
+        window.unisat.requestAccounts()
     }, [router.isReady])
 
 
@@ -161,7 +158,7 @@ export default function TokenTrade(
                     {loading ? <Spin style={{ marginTop: '48px' }} /> :
                         <>
                             <div className={styles.cardList}>
-                                {orders.map((item, index) => (
+                                {orders.map((item: any, index) => (
                                     <div onClick={() => showModal1(item)} key={index} className={styles.orderCard}>
                                         <div className={styles.cardTop}>
                                             <div className={styles.titleTop}>
@@ -194,11 +191,7 @@ export default function TokenTrade(
                                 <Pagination showQuickJumper defaultCurrent={1} total={total} />
                             </div>
                         </>}
-
                 </div>
-                {/* Pagination will go here */}
-
-
             </div>,
         },
         {
@@ -236,18 +229,16 @@ export default function TokenTrade(
                     </div>
                     <div className={styles.infoTab}>
                         <div className={styles.tabTitle}>Market Cap</div>
-                        <div>{(tokenInfo.market_cap * btcPrice.usd * 0.00000001).toFixed(3)}</div>
+                        <div>{"$ " + (tokenInfo.market_cap * btcPrice.usd * 0.00000001).toFixed(3)}</div>
                     </div>
-
-
 
                     <div className={styles.infoTab}>
                         <div className={styles.tabTitle}>volume(24h)</div>
-                        <div>{(tokenInfo.volume_24h * btcPrice.usd * 0.00000001).toFixed(3)}</div>
+                        <div>{"$ " + (tokenInfo.volume_24h * btcPrice.usd * 0.00000001).toFixed(3)}</div>
                     </div>
                     <div className={styles.infoTab}>
                         <div className={styles.tabTitle}>Total Volume</div>
-                        <div>{(tokenInfo.volume_all * btcPrice.usd * 0.00000001).toFixed(3)}</div>
+                        <div>{"$ " + (tokenInfo.volume_all * btcPrice.usd * 0.00000001).toFixed(3)}</div>
                     </div>
                 </div>
             </div> : <></>}

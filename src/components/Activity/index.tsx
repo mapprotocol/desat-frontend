@@ -14,7 +14,7 @@ import { ellipsizeString, formatDate } from '@/utils/utils';
 const status = ["All", "Listed", "Sold", "Unlisted", "Updated"]
 const color = ["blue", "processing", "success", "error", "warning"]
 
-export const Activity = ({ btcPrice }) => {
+export const Activity = ({ btcPrice }: any) => {
     const router = useRouter()
     const [activity, setActivity] = React.useState<any>(null);
 
@@ -46,7 +46,7 @@ export const Activity = ({ btcPrice }) => {
         {
             title: 'Total cost',
             dataIndex: '',
-            render: (_: any, item) => <>{"$ " + item.unit_price * item.amount * btcPrice * 0.00000001}</>,
+            render: (_: any, item: any) => <>{"$ " + item.unit_price * item.amount * btcPrice * 0.00000001}</>,
         },
         {
             title: 'Seller',

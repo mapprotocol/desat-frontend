@@ -4,7 +4,7 @@ import styles from './index.module.css'
 import Router from 'next/router';
 import { useRouter } from 'next/router';
 import { signIn, signInPrepare } from '@/api';
-import { ellipsizeString } from '@/utils/utils';
+import { ellipsizeString, signInFun } from '@/utils/utils';
 
 
 const Header = (
@@ -20,9 +20,11 @@ const Header = (
 
 
     useEffect(() => {
-        if (localStorage.getItem('accessToken') && new Date().getTime() > Number(localStorage.getItem('at_expires'))*1000 && localStorage.getItem('address') == unisat._selectedAddress) {
+        if (localStorage.getItem('accessToken') 
+        && new Date().getTime() < Number(localStorage.getItem('at_expires')) * 1000 
+        && localStorage.getItem('address') == window.unisat._selectedAddress) {
             setUserInfo({
-                address: unisat._selectedAddress
+                address: window.unisat._selectedAddress
             })
         }
         const headerVisibility = () => {
@@ -42,28 +44,11 @@ const Header = (
 
 
     const signInFunc = async () => {
-        // console.log(await window.unisat.signMessage("hello world"))
         if (userInfo.address)
             return
-        signInPrepare({
-            address: unisat._selectedAddress
-        }).then(async res => {
-            let signature = await window.unisat.signMessage(res.data.sign_message)
-            let pubkey = await window.unisat.getPublicKey();
-            signIn({
-                address: unisat._selectedAddress,
-                pubkey: pubkey,
-                signature
-            }).then(res => {
-                localStorage.setItem('accessToken', res.data.access_token);
-                localStorage.setItem('address', unisat._selectedAddress);
-
-                localStorage.setItem('at_expires', res.data.at_expires);
-
-                setUserInfo({
-                    address: unisat._selectedAddress
-                })
-            })
+        await signInFun()
+        setUserInfo({
+            address: window.unisat._selectedAddress
         })
     }
 

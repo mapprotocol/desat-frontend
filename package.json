@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "TS_NODE_TRANSPILE_ONLY=1 next build",
     "start": "next start",
     "lint": "next lint"
   },

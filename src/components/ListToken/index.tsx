@@ -9,11 +9,11 @@ import { Button, Input, List, Tag, message } from 'antd';
 
 
 
-export const ListToken = ({ btcPrice }) => {
+export const ListToken = ({ btcPrice }: any) => {
     const router = useRouter()
     const [selectedId, setSelectedId] = React.useState(null);
 
-    const [tokenList, setTokenList] = React.useState([])
+    const [tokenList, setTokenList] = React.useState<any[]>([])
     const [total, setTotal] = React.useState(0)
     const [value, setValue] = React.useState("");
     const [disabled, setDisable] = React.useState(false);
@@ -25,23 +25,24 @@ export const ListToken = ({ btcPrice }) => {
         if (router.isReady) {
             getTransferableInscriptionFunc()
         }
-        unisat.requestAccounts()
+        window.unisat.requestAccounts()
     }, [router.isReady])
 
     const getTransferableInscriptionFunc = async () => {
-        await getTransferableInscription({
-            tick: router.query.tick.toUpperCase(),
-            address: unisat._selectedAddress
-        }).then(res => {
-            setTokenList(res.data)
-            let _total = 0
-            res.data.forEach(item => {
-                if (item.is_locked == false) {
-                    _total += item.amount
-                }
-            });
-            setTotal(_total)
-        })
+        if (typeof router.query.tick == "string")
+            await getTransferableInscription({
+                tick: router.query.tick.toUpperCase(),
+                address: window.unisat._selectedAddress
+            }).then(res => {
+                setTokenList(res.data)
+                let _total = 0
+                res.data.forEach((item: any) => {
+                    if (item.is_locked == false) {
+                        _total += item.amount
+                    }
+                });
+                setTotal(_total)
+            })
     }
     const handleSelectItem = (item: any, id: any) => {
         if (item.is_locked)
@@ -49,31 +50,26 @@ export const ListToken = ({ btcPrice }) => {
         setSelectedId(selectedId === id ? null : id);
     };
 
-    const handleInputChange = (e) => {
-        // 使用正则表达式限制只能输入数字
+    const handleInputChange = (e:any) => {
+
         const newValue = e.target.value.replace(/[^0-9]/g, '');
         setValue(newValue);
 
-
+        if (selectedId == null)
+            return
         const newTotal = newValue ? parseInt(newValue, 10) * tokenList[selectedId].amount * btcPrice * 0.00000001 : 0;
         setCost(newTotal);
     };
     const listOrder = async () => {
-        if(disabled) return
+        if (disabled) return
         try {
             setDisable(true)
-            let atomicalInfo = tokenList[selectedId]
+            if (selectedId == null)
+                return
+            let atomicalInfo: any = tokenList[selectedId]
             const pubkey = await window.unisat.getPublicKey();
-            // const putOnResponse = await createPutOn({
-            //     tick: router.query.tick.toUpperCase(),
-            //     atomical_id: atomicalInfo.atomical_id,
-            //     tx_id: atomicalInfo.tx_id,
-            //     vout: atomicalInfo.vout,
-            //     amount: 10000,
-            //     unit_price: 2,
-            //     seller: unisat._selectedAddress,
-            //     pubkey: pubkey
-            // });
+            if (typeof router.query.tick !== "string")
+                return
             const putOnResponse = await createPutOn({
                 tick: router.query.tick.toUpperCase(),
                 atomical_id: atomicalInfo.atomical_id,
@@ -81,7 +77,7 @@ export const ListToken = ({ btcPrice }) => {
                 vout: atomicalInfo.vout,
                 amount: atomicalInfo.amount,
                 unit_price: Number(value),
-                seller: unisat._selectedAddress,
+                seller: window.unisat._selectedAddress,
                 pubkey: pubkey
             });
             const toSignInputs: any[] = []
@@ -93,7 +89,7 @@ export const ListToken = ({ btcPrice }) => {
                 })
             })
 
-            const signedPsbt = await unisat.signPsbt(
+            const signedPsbt = await window.unisat.signPsbt(
                 putOnResponse.data.psbt,
                 {
                     autoFinalized: false,
@@ -129,7 +125,7 @@ export const ListToken = ({ btcPrice }) => {
                 <List
                     itemLayout="horizontal"
                     dataSource={tokenList}
-                    renderItem={(item, index) => (
+                    renderItem={(item: any, index) => (
                         <List.Item
                             style={{
                                 backgroundColor: selectedId === index ? '#e6f7ff' : '',

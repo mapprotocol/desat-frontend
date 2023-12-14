@@ -9,11 +9,11 @@ import { Button, List, Card, Input, Slider, InputNumber, Row, Col, Descriptions,
 
 
 
-export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
+export const BuyToken = ({ order, tokenInfo, btcPrice }: any) => {
     const router = useRouter()
     const [selectedId, setSelectedId] = React.useState(null);
-    const myOrder = (order.seller == unisat._selectedAddress ? true : false)
-    const [gasData, setGasData] = React.useState({});
+    const myOrder = (order.seller == window.unisat._selectedAddress ? true : false)
+    const [gasData, setGasData] = React.useState<any>({});
 
     const [total, setTotal] = React.useState(0)
 
@@ -24,7 +24,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
     useEffect(() => {
         createBidPrepare({
             action_id: order.action_id,
-            address: unisat._selectedAddress
+            address: window.unisat._selectedAddress
         }).then(res => {
 
             setGasData(res.data)
@@ -36,12 +36,13 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
 
     const createBidfun = async () => {
         const pubkey = await window.unisat.getPublicKey();
+        if (selectedId === null) return
 
         createBid({
             action_id: gasData.action_id,
             bid_price: order.unit_price,
             fee_rate: selectedId == 3 ? inputValue : gasCard[selectedId].content,
-            buyer: unisat._selectedAddress,
+            buyer: window.unisat._selectedAddress,
             pubkey: pubkey
 
         }).then(async res => {
@@ -55,7 +56,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                 })
             })
             console.log(res.data.psbt_bid, toSignInputs)
-            const signedPsbt = await unisat.signPsbt(
+            const signedPsbt = await window.unisat.signPsbt(
                 res.data.psbt_bid,
                 {
                     autoFinalized: false,
@@ -93,7 +94,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
         }).then(async res => {
 
             const toSignInputs: any[] = []
-            res.data.sign_indexes.forEach((item: { index: any; sign_hash_type: number }) => {
+            res.data.sign_indexes.forEach((item: { index: any; sighash_type: number }) => {
                 toSignInputs.push({
                     index: item.index,
                     publicKey: pubkey,
@@ -101,7 +102,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                 })
             })
             console.log(res.data.psbt, toSignInputs)
-            const signedPsbt = await unisat.signPsbt(
+            const signedPsbt = await window.unisat.signPsbt(
                 res.data.psbt,
                 {
                     autoFinalized: false,
@@ -128,7 +129,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
 
     const createPutOffFun = async () => {
         const pubkey = await window.unisat.getPublicKey();
-
+        if (selectedId === null) return
         createPutOff({
             action_id: gasData.action_id,
             fee_rate: selectedId == 3 ? inputValue : gasCard[selectedId].content,
@@ -143,7 +144,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                 })
             })
             console.log(res.data.psbt, toSignInputs)
-            const signedPsbt = await unisat.signPsbt(
+            const signedPsbt = await window.unisat.signPsbt(
                 res.data.psbt,
                 {
                     autoFinalized: false,
@@ -197,6 +198,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                         max={gasData.high_fee_rate}
                         style={{ margin: '0 16px' }}
                         value={inputValue}
+                        //@ts-ignore
                         onChange={onChange}
                     />
                 </Col>
@@ -225,7 +227,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
             span: { xl: 2, xxl: 2 },
             children: order.amount.toLocaleString('en-US'),
         },
-       
+
         {
             label: 'Unit Price',
             span: { xl: 2, xxl: 2 },
@@ -305,7 +307,7 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                     />
                 </div>
 
-                <div className={styles.buttons}>
+                {localStorage.getItem('address') == window.unisat._selectedAddress && < div className={styles.buttons}>
                     {myOrder ?
                         <><Button disabled={selectedId === null} style={{ width: '96px', marginTop: '24px' }} onClick={
                             createPutOffFun
@@ -316,8 +318,8 @@ export const BuyToken = ({ order, tokenInfo, btcPrice }) => {
                         </> : <Button disabled={selectedId === null} style={{ width: '96px', marginTop: '24px' }} onClick={
                             createBidfun
                         } type="primary" >BUY</Button>}
-                </div>
-            </div>
+                </div>}
+            </div >
         </ >
     )
 
