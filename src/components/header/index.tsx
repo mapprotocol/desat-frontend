@@ -20,13 +20,14 @@ const Header = (
 
 
     useEffect(() => {
-        if (localStorage.getItem('accessToken') 
-        && new Date().getTime() < Number(localStorage.getItem('at_expires')) * 1000 
-        && localStorage.getItem('address') == window.unisat._selectedAddress) {
-            setUserInfo({
-                address: window.unisat._selectedAddress
-            })
-        }
+        if (window.unisat)
+            if (localStorage.getItem('accessToken')
+                && new Date().getTime() < Number(localStorage.getItem('at_expires')) * 1000
+                && localStorage.getItem('address') == window.unisat._selectedAddress) {
+                setUserInfo({
+                    address: window.unisat._selectedAddress
+                })
+            }
         const headerVisibility = () => {
             if (window.pageYOffset > 100) {
                 setFade(`${styles.header} ${styles.shadow}`)
